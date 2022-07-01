@@ -2,10 +2,9 @@ import * as React from 'react';
 import { View, Text, Button, TextInput, StyleSheet } from 'react-native';
 import { Table, TableWrapper, Row, Rows, Col } from 'react-native-table-component';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_URL } from '../config';
 
 const History = ({ navigation }) => {
-
-    const API_URL = 'http://192.168.1.2:30000';
 
     const [locationLog, setLocationLog] = React.useState([{
         createdAt: "",

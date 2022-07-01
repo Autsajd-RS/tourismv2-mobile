@@ -3,14 +3,13 @@ import MapView, { Callout, Circle, Marker } from 'react-native-maps';
 import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_URL } from '../config';
 
 const Maps = ({ navigation }) => {
     const [pin, setPin] = React.useState({
         latitude: 0.0,
         longitude: 0.0,
     });
-
-    const API_URL = 'http://192.168.1.2:30000';
   
     const [errorMsg, setErrorMsg] = React.useState('');
   
@@ -73,7 +72,7 @@ const Maps = ({ navigation }) => {
   
       })();
     }, []);
-  
+    
     return (
       <View style={styles.container}>
         {errorMsg.length > 0 && <Text style="error"></Text>}
@@ -86,6 +85,32 @@ const Maps = ({ navigation }) => {
             longitudeDelta: 0.0421,
           }}
           provider="google"
+          userLocationUpdateInterval={10000}
+          onUserLocationChange={async (e) => {
+            e.persist();
+            try {
+              const token = await AsyncStorage.getItem('@token');
+              let response = await fetch(API_URL + '/api/destinations/radius', {
+                method: 'POST',
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                  Authorization: 'Bearer ' + token
+                },
+                body: JSON.stringify(e.nativeEvent.coordinate),
+              });
+      
+              response = await response.json();
+              setDestinations(response);
+            } catch (e) {
+      
+              return;
+            }
+            setPin({
+              latitude: e.nativeEvent.coordinate.latitude,
+              longitude: e.nativeEvent.coordinate.longitude
+            })
+          }}
         >
           <Marker 
             coordinate={pin}

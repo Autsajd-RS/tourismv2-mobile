@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { View, Text, Button, TextInput, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_URL } from '../config';
 
 const Login = ({ navigation }) => {
-
-  const API_URL = 'http://192.168.1.2:30000';
 
   const [credentials, setCredentials] = React.useState({
     email: '',
